@@ -1,5 +1,7 @@
 var express = require('express')
 var urlRouter = require('./routes/url')
+var staticRouter = require('./routes/staticRouter')
+var path = require('path')
 var URL = require('./models/url')
 var connectToDB = require('./connect')
 var app = express()
@@ -12,8 +14,14 @@ connectToDB('mongodb://localhost:27017/url-shortener').then(()=>{
 
 // middleware
 app.use(express.json())
+app.use(express.urlencoded({extended:false}))
 
-app.get("/:shortId", async (req, res) => {
+app.set('view engine', 'ejs')
+app.set('views', path.resolve('./views'))
+
+app.get('/', staticRouter)
+
+app.get("/url/:shortId", async (req, res) => {
     console.log('got request', req.params)
     var shortURL = req.params.shortId
     var data = await URL.findOneAndUpdate({
