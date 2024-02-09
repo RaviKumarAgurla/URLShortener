@@ -32,7 +32,6 @@ app.get("/url/:shortId", async (req, res) => {
             accessHistory: {timestamp: Date.now()}
             }
     })
-    console.log(data)
     res.redirect(data.redirectURL)
 })
 

@@ -13,7 +13,8 @@
 <body>
     <div>
         <% if(locals.id) { %>
-        <p>URL Generated: https://www.localhost.com:8000/<%=id%></p>
+      
+        <p>URL Generated: http://localhost:8000/url/<%=id%></p>
         <%} %>
         <form method="POST" action="/url">
             <h1>Generate Short URL</h1>
@@ -32,7 +33,6 @@
                 <th>Total Visits</th>
             </thead>
             <tbody>
-                
                 <% urls.forEach((url, index) => { %>
                 <tr>
                  <td><%= index + 1 %></td>
