@@ -1,9 +1,15 @@
 var express = require('express')
-var urlRouter = require('./routes/url')
-var staticRouter = require('./routes/staticRouter')
 var path = require('path')
 var URL = require('./models/url')
+var cookieParser = require('cookie-parser')
 var connectToDB = require('./connect')
+var {checkUser, checkAuth} = require('./middlewares/auth')
+
+
+var urlRouter = require('./routes/url')
+var staticRouter = require('./routes/staticRouter')
+var userRouter = require('./routes/userRouter')
+
 var app = express()
 var PORT = 8000
 
@@ -15,11 +21,10 @@ connectToDB('mongodb://localhost:27017/url-shortener').then(()=>{
 // middleware
 app.use(express.json())
 app.use(express.urlencoded({extended:false}))
+app.use(cookieParser());
 
 app.set('view engine', 'ejs')
 app.set('views', path.resolve('./views'))
-
-app.get('/', staticRouter)
 
 app.get("/url/:shortId", async (req, res) => {
     console.log('got request', req.params)
@@ -46,7 +51,9 @@ app.get('/analytics/:shortId', async (req, res) => {
 })
 
 // Routes
-app.use('/url', urlRouter)
+app.use('/url',checkUser, urlRouter)
+app.use('/', checkAuth, staticRouter)
+app.use('/user', userRouter)
 
 app.listen(PORT, () => {
     console.log(`Server is listening at PORT: ${PORT}`)
