@@ -15,14 +15,17 @@ async function generateURLShortener(req, res) {
 
 }
 
+
+
 async function handleGetAnalytics(req, res) {
-    const shortId = req.params.shortId;
-    const result = await URL.findOne({ shortId });
-    return res.json({
-      totalClicks: result.accessHistory.length,
-      analytics: result.accessHistory,
-    });
-  }
+    var shortURL = req.params.shortId
+    console.log('shortid', shortURL)
+    var data = await URL.findOne({
+        shortURL
+    })
+    console.log('data', data)
+    return res.status(200).json({ clicked: data.accessHistory.length, accessHistory: data.accessHistory})
+}
 
 module.exports = {
     generateURLShortener,

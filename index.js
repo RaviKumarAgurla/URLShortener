@@ -40,16 +40,6 @@ app.get("/url/:shortId", async (req, res) => {
     res.redirect(data.redirectURL)
 })
 
-app.get('/analytics/:shortId', async (req, res) => {
-    var shortURL = req.params.shortId
-    console.log('shortid', shortURL)
-    var data = await URL.findOne({
-        shortURL
-    })
-    console.log('data', data)
-    return res.status(200).json({ clicked: data.accessHistory.length, accessHistory: data.accessHistory})
-})
-
 // Routes
 app.use('/url',checkUser, urlRouter)
 app.use('/', checkAuth, staticRouter)
