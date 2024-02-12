@@ -5,12 +5,12 @@ const { v4: uuidv4 } = require('uuid');
 
 async function handleSignUpUser(req, res) {
     var body = req.body;
-    var uuid = uuidv4()
     if(!body || !body.password || !body.name || !body.email) return res.status(400).send('Please submit required fields')
     var result = await User.create({
         name: body.name,
         email: body.email,
-        password: body.password
+        password: body.password,
+        role: 'NORMAL'
     })
 
     return res.redirect('/')
@@ -25,9 +25,9 @@ async function handleLoginUser(req, res) {
         password: body.password
     })
     if(!user) return res.status(404).json('check username and password')
-    var sessionId = uuidv4();
-    setUser(sessionId, user);
-    res.cookie("uuid", sessionId);
+    var token = setUser(user);
+    req.user = user;
+    res.cookie("uuid", token);
     res.redirect('/')
 }
 

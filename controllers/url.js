@@ -23,7 +23,6 @@ async function handleGetAnalytics(req, res) {
     var data = await URL.findOne({
         shortURL
     })
-    console.log('data', data)
     return res.status(200).json({ clicked: data.accessHistory.length, accessHistory: data.accessHistory})
 }
 

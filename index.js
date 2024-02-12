@@ -3,7 +3,7 @@ var path = require('path')
 var URL = require('./models/url')
 var cookieParser = require('cookie-parser')
 var connectToDB = require('./connect')
-var {checkUser, checkAuth} = require('./middlewares/auth')
+var {checkAuthentication, restrictToRole} = require('./middlewares/auth')
 
 
 var urlRouter = require('./routes/url')
@@ -22,6 +22,7 @@ connectToDB('mongodb://localhost:27017/url-shortener').then(()=>{
 app.use(express.json())
 app.use(express.urlencoded({extended:false}))
 app.use(cookieParser());
+app.use(checkAuthentication)
 
 app.set('view engine', 'ejs')
 app.set('views', path.resolve('./views'))
@@ -41,8 +42,8 @@ app.get("/url/:shortId", async (req, res) => {
 })
 
 // Routes
-app.use('/url',checkUser, urlRouter)
-app.use('/', checkAuth, staticRouter)
+app.use('/url', restrictToRole(['NORMAL']), urlRouter)
+app.use('/', staticRouter)
 app.use('/user', userRouter)
 
 app.listen(PORT, () => {
